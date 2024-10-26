@@ -106,7 +106,7 @@ const useGame = (): GameContextValue => {
 
       setMoveCount((prevCount) => {
         const newCount = prevCount + piecesRemoved;
-        if (newCount >= 3) {
+        if (newCount >= 3 && index !== undefined) {
           finishTurn();
           return 0;
         } else {
@@ -136,23 +136,28 @@ const useGame = (): GameContextValue => {
    */
   const calculateOptimalMove = useCallback(
     (piecesRemaining: number): number => {
-      if (piecesRemaining <= 1) {
-        // Forced to take the last piece
-        return 1;
-      }
-
-      // Calculate the modulo of the remaining pieces
-      const modulo = piecesRemaining % 4;
-
-      if (modulo === 1) {
-        // Can't force a win, pick 1 piece
-        return 1;
+      let itemsTaken: number;
+      if ((piecesRemaining - 1) % 4 === 0) {
+        // Computer is in a losing position; cannot avoid losing
+        // Take 1 item to prolong the game
+        itemsTaken = 1;
       } else {
-        // Remove enough pieces to leave the opponent with a losing position
-        const piecesToRemove = modulo === 0 ? 3 : modulo - 1;
-        // Ensure the move is legal (between 1 and 3)
-        return Math.min(Math.max(piecesToRemove, 1), 3);
+        // Computer takes enough to make (remainingItems % 4 === 1) for the player
+        itemsTaken = piecesRemaining % 4;
+
+        if (itemsTaken === piecesRemaining) {
+          // Computer is in a winning position; take all items - 1
+          itemsTaken = piecesRemaining - 1;
+        } else if (itemsTaken === 0 || itemsTaken > 3) {
+          itemsTaken = 3;
+        }
       }
+
+      console.log(
+        `Total items: ${piecesRemaining}`,
+        `Items taken: ${itemsTaken}`
+      );
+      return itemsTaken;
     },
     []
   );

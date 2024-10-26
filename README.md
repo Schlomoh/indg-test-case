@@ -2,24 +2,23 @@
 
 ## Introduction
 
-"Last One Out Loses" is a simple yet strategic game where a playing surface is covered with at least 20 items (sticks, coins, etc.). Two players take turns, and each may remove 1 to 3 items. The player who removes the final item loses the game.
+"Last One Out Loses" is a simple yet strategic game where a playing surface is covered with 20 items (sticks, coins, etc.). Two players take turns, and each may remove 1 to 3 items. The player who removes the final item loses the game.
 
 ## Game Mechanics
 
 ### Starting with 20 Pieces:
 
-**Second Player’s Advantage:** If you start with 20 items, the second player can gain a significant advantage by following an optimal strategy.
+**First Player’s Advantage:** If you start with 20 items, the first player can gain a significant advantage by a simple strategy. By simply always taking 3 items, the first player can control the game.
 
 #### Caveat
 
-As the first player, no matter if you pick 1, 2, or 3 pieces, the second player can counter your move in a way that puts you at a disadvantage.
+The second player may easily disrupt the strategy by taking fewer items, to later bae an advantage.
 
-### Second Player’s Winning Strategy:
+### First Player’s Winning Strategy:
 
-- **Keep It at Multiples of 4:** The trick is for the second player to always ensure that after their turn, the total number of pieces left is a multiple of 4.
-- **How to Pull It Off:**
-  - If the first player takes **1 piece**, you take **3**. Now there are **16** pieces left.
-  - If they take **2 pieces**, you grab **2**. Again, **16** pieces remain.
+- **Keep It at Multiples of 4:** The trick is for the second player to ensure that at their turn, the total number of pieces left is a multiple of 4.
+  - If you take **3 pieces**, the second player takes **3**. Now there are **14** pieces left.
+  - If you take **2 pieces**, you grab **2**. Again, **16** pieces remain.
   - If they take **3 pieces**, you pick up **1**. Once more, **16** pieces are left.
 
 By doing this, you're controlling the flow of the game. The first player can't break out of this pattern, and eventually, they'll be forced to take the last piece and lose.
