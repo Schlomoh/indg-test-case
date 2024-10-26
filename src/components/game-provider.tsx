@@ -106,16 +106,10 @@ const useGame = (): GameContextValue => {
 
       setMoveCount((prevCount) => {
         const newCount = prevCount + piecesRemoved;
-
-        // Automatically finish the turn if maximum moves are reached.
-        if (newCount >= 3) {
-          finishTurn();
-        }
-
         return newCount;
       });
     },
-    [winner, finishTurn]
+    [winner]
   );
 
   /**
@@ -130,35 +124,79 @@ const useGame = (): GameContextValue => {
   }, [pieces.length, turn, winner]);
 
   /**
+   * Calculate the optimal move for the AI
+   * Returns the number of pieces to remove (1-3)
+   */
+  const calculateOptimalMove = useCallback(
+    (piecesRemaining: number, currentMoveCount: number): number => {
+      // Calculate how many pieces we can still remove this turn
+      const maxAllowedThisTurn = 3 - currentMoveCount;
+
+      // If we can't make any more moves this turn, return 0
+      if (maxAllowedThisTurn <= 0) return 0;
+
+      // Target leaving opponent with a multiple of 4 pieces
+      const targetPieces = Math.floor((piecesRemaining - 1) / 4) * 4;
+      let piecesToRemove = piecesRemaining - targetPieces;
+
+      // Ensure the move is legal (between 1 and 3, and doesn't exceed remaining allowed moves)
+      piecesToRemove = Math.min(
+        Math.max(1, piecesToRemove),
+        3,
+        maxAllowedThisTurn,
+        piecesRemaining
+      );
+
+      return piecesToRemove;
+    },
+    []
+  );
+
+  /**
    * Effect that simulates the computer's turn in single-player mode.
    */
   useEffect(() => {
     // Only act if the game is in single-player mode, it's player 2's turn, and there's no winner.
     if (gameMode !== "single" || turn !== 2 || winner) return;
 
-    // Simulate a delay for the computer's move (optional).
+    // Simulate a delay for the computer's move
     const computerMoveDelay = setTimeout(() => {
-      // Determine how many pieces the computer should remove.
-      const piecesRemaining = pieces.length;
-      let piecesToRemove = piecesRemaining % 4;
+      const piecesToRemove = calculateOptimalMove(pieces.length, moveCount);
 
-      // If modulo 4 is 0, pick a random number between 1 and 3.
-      if (piecesToRemove === 0 || piecesToRemove > 3) {
-        piecesToRemove = Math.floor(Math.random() * 3) + 1;
+      if (piecesToRemove > 0) {
+        increaseMoveCount(piecesToRemove);
+
+        // Only finish turn if we've used all our moves or can't make any more optimal moves
+        if (moveCount + piecesToRemove >= 3) {
+          finishTurn();
+        } else {
+          // Schedule next move evaluation after a short delay
+          setTimeout(() => {
+            const nextMove = calculateOptimalMove(
+              pieces.length - piecesToRemove,
+              moveCount + piecesToRemove
+            );
+            if (nextMove === 0) {
+              finishTurn();
+            }
+          }, 500);
+        }
+      } else {
+        finishTurn();
       }
-
-      // Ensure we don't remove more pieces than are available.
-      piecesToRemove = Math.min(piecesToRemove, 3, piecesRemaining);
-
-      // Increase move count and remove pieces.
-      increaseMoveCount(piecesToRemove);
-
-      // Finish the turn if maximum moves are reached or if pieces are depleted.
-      finishTurn();
-    }, 500); // 500ms delay for realism
+    }, 500);
 
     return () => clearTimeout(computerMoveDelay);
-  }, [gameMode, turn, winner, pieces.length, increaseMoveCount, finishTurn]);
+  }, [
+    gameMode,
+    turn,
+    winner,
+    pieces.length,
+    moveCount,
+    increaseMoveCount,
+    finishTurn,
+    calculateOptimalMove,
+  ]);
 
   return {
     pieces,
