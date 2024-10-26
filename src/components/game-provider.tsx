@@ -106,10 +106,13 @@ const useGame = (): GameContextValue => {
 
       setMoveCount((prevCount) => {
         const newCount = prevCount + piecesRemoved;
+        if (newCount >= 3) {
+          setTimeout(() => finishTurn(), 0);
+        }
         return newCount;
       });
     },
-    [winner]
+    [winner, finishTurn]
   );
 
   /**
@@ -128,22 +131,15 @@ const useGame = (): GameContextValue => {
    * Returns the number of pieces to remove (1-3)
    */
   const calculateOptimalMove = useCallback(
-    (piecesRemaining: number, currentMoveCount: number): number => {
-      // Calculate how many pieces we can still remove this turn
-      const maxAllowedThisTurn = 3 - currentMoveCount;
-
-      // If we can't make any more moves this turn, return 0
-      if (maxAllowedThisTurn <= 0) return 0;
-
+    (piecesRemaining: number): number => {
       // Target leaving opponent with a multiple of 4 pieces
       const targetPieces = Math.floor((piecesRemaining - 1) / 4) * 4;
       let piecesToRemove = piecesRemaining - targetPieces;
 
-      // Ensure the move is legal (between 1 and 3, and doesn't exceed remaining allowed moves)
+      // Ensure the move is legal (between 1 and 3)
       piecesToRemove = Math.min(
         Math.max(1, piecesToRemove),
         3,
-        maxAllowedThisTurn,
         piecesRemaining
       );
 
@@ -161,29 +157,9 @@ const useGame = (): GameContextValue => {
 
     // Simulate a delay for the computer's move
     const computerMoveDelay = setTimeout(() => {
-      const piecesToRemove = calculateOptimalMove(pieces.length, moveCount);
-
-      if (piecesToRemove > 0) {
-        increaseMoveCount(piecesToRemove);
-
-        // Only finish turn if we've used all our moves or can't make any more optimal moves
-        if (moveCount + piecesToRemove >= 3) {
-          finishTurn();
-        } else {
-          // Schedule next move evaluation after a short delay
-          setTimeout(() => {
-            const nextMove = calculateOptimalMove(
-              pieces.length - piecesToRemove,
-              moveCount + piecesToRemove
-            );
-            if (nextMove === 0) {
-              finishTurn();
-            }
-          }, 500);
-        }
-      } else {
-        finishTurn();
-      }
+      const piecesToRemove = calculateOptimalMove(pieces.length);
+      increaseMoveCount(piecesToRemove);
+      finishTurn(); // AI always finishes turn after one move
     }, 500);
 
     return () => clearTimeout(computerMoveDelay);
@@ -192,10 +168,9 @@ const useGame = (): GameContextValue => {
     turn,
     winner,
     pieces.length,
-    moveCount,
     increaseMoveCount,
-    finishTurn,
     calculateOptimalMove,
+    finishTurn,
   ]);
 
   return {

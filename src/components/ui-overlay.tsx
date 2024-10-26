@@ -52,7 +52,7 @@ export default function UIOverlay() {
         </div>
         {!winner && (
           <button
-            disabled={moveCount === 0}
+            disabled={moveCount === 0 || (gameMode === "single" && turn === 2)}
             onClick={handleFinishTurn}
             className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition-all duration-300 ease-in-out pointer-events-auto z-20"
             style={{ pointerEvents: "auto" }}

@@ -8,7 +8,7 @@ const PlayingPieces: React.FC = () => {
   const [activePiece, setActivePiece] = useState<number | null>(null);
   const meshRef = useRef<InstancedMesh>(null);
 
-  const { pieces, increaseMoveCount, winner } = useGameContext();
+  const { pieces, moveCount, increaseMoveCount, winner } = useGameContext();
   const { raycaster, mouse, camera } = useThree();
 
   useFrame(() => {
@@ -43,7 +43,8 @@ const PlayingPieces: React.FC = () => {
   function handlePieceClick(index: number) {
     if (winner) return;
     setActivePiece(null);
-    increaseMoveCount(1, index);
+
+    if (moveCount < 3) increaseMoveCount(1, index);
   }
 
   return (
