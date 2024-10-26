@@ -13,7 +13,7 @@ export default function StartScreen({
   return (
     <div className="w-full h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-500 flex flex-col items-center justify-center p-4">
       <h1 className="text-6xl font-bold text-white mb-8 text-center font-candy animate-bounce">
-        Sweet Victory!
+        Last one out loses
       </h1>
       <div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-3xl p-8 max-w-md w-full">
         <h2 className="text-3xl font-bold text-white mb-6 text-center">
