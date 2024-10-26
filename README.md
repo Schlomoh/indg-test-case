@@ -37,3 +37,9 @@ Yes, this strategy works no matter how many pieces you start with. Just aim to l
 ### Is This Provable?
 
 Yes, it’s a simple pattern that plays out every time if you stick to the plan. Think of It Like a Game Plan. you’re basically using a simple strategy to keep the odds in your favor.
+
+## Further develpment (Online multiplayer)
+
+One could also add a database integration to manage online multiplayer by tracking session ids and player ids. this would not even require users to log-in.
+
+By knowing the session ID two players could share a state in the db and play on their devices respectively - The db tracking move count, current player etc.
