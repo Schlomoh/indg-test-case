@@ -3,6 +3,7 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "types": ["react", "react-dom"],
     "module": "ESNext",
     "skipLibCheck": true,
 
@@ -22,7 +23,7 @@
 
     /* Custom resolve */
     "paths": {
-      "@/*" : ["./src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"],

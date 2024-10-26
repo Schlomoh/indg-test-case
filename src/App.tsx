@@ -1,16 +1,15 @@
-import {Provider as ReduxProvider} from "react-redux";
-import {CssVarsProvider} from "@mui/joy";
-
-import {theme} from "@/theme.ts";
-import {store} from "@/store";
+import { Scene, GameProvider, UIOverlay } from "@/components";
+import "./tailwind.css";
 
 function App() {
-    return (
-        <ReduxProvider store={store}>
-            <CssVarsProvider theme={theme}>
-            </CssVarsProvider>
-        </ReduxProvider>
-    )
+  return (
+    <div className="h-screen w-screen">
+      <GameProvider>
+        <UIOverlay />
+        <Scene />
+      </GameProvider>
+    </div>
+  );
 }
 
-export default App
+export default App;
