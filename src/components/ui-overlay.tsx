@@ -1,9 +1,8 @@
-"use client";
-
 import { useCallback } from "react";
-import useGameContext from "@/lib/use-game-context";
 import { Lollipop, Users, Move } from "lucide-react";
-import StartScreen from "./StartScreen";
+
+import useGameContext from "@/lib/use-game-context";
+import StartScreen from "./start-screen";
 
 export default function UIOverlay() {
   const { turn, finishTurn, moveCount, pieces, winner, gameMode, setGameMode } =
@@ -12,8 +11,6 @@ export default function UIOverlay() {
   const handleFinishTurn = useCallback(() => {
     finishTurn();
   }, [finishTurn]);
-
-  console.log(winner, turn, gameMode);
 
   return gameMode ? (
     <div className="w-full h-full absolute top-0 left-0 pointer-events-none z-10">

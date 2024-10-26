@@ -82,10 +82,9 @@ const useGame = (): GameContextValue => {
   }, [toggleTurn]);
 
   /**
-   * Increases the move count for the current turn.
-   * Removes the specified number of pieces from the game.
-   * If the maximum moves are reached, it automatically finishes the turn.
-   * @param piecesRemoved - The number of pieces to remove (1-3).
+   * Increases the move count by the given number of pieces removed.
+   * @param piecesRemoved The number of pieces to remove.
+   * @param index The index of the piece to remove.
    */
   const increaseMoveCount = useCallback(
     (piecesRemoved: number, index?: number) => {
@@ -122,15 +121,18 @@ const useGame = (): GameContextValue => {
    * Effect that checks for a winner whenever the pieces array changes.
    */
   useEffect(() => {
-    if (pieces.length <= 1 && !winner) {
+    if (winner) return;
+    // Check if the current player has to remove the last piece.
+    if ((pieces.length <= 1 && moveCount === 0) || pieces.length === 0) {
       // The current player will have to remove the last piece and thus loses.
       setWinner(turn === 1 ? 2 : 1);
     }
-  }, [pieces.length, turn, winner]);
+  }, [pieces.length, turn, winner, moveCount]);
 
   /**
-   * Calculate the optimal move for the AI
-   * Returns the number of pieces to remove (1-3)
+   * Calculates the optimal move for the computer player in single-player mode.
+   * @param piecesRemaining The number of pieces remaining.
+   * @returns The number of pieces to remove.
    */
   const calculateOptimalMove = useCallback(
     (piecesRemaining: number): number => {
@@ -139,6 +141,7 @@ const useGame = (): GameContextValue => {
         return 1;
       }
 
+      // Calculate the modulo of the remaining pieces
       const modulo = piecesRemaining % 4;
 
       if (modulo === 1) {
@@ -155,7 +158,7 @@ const useGame = (): GameContextValue => {
   );
 
   /**
-   * Effect that simulates the computer's turn in single-player mode.
+   * Effect that simulates the computer's move in single-player mode.
    */
   useEffect(() => {
     // Only act if the game is in single-player mode, it's player 2's turn, and there's no winner.
