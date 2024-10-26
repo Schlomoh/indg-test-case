@@ -8,7 +8,7 @@ const PlayingPieces: React.FC = () => {
   const [activePiece, setActivePiece] = useState<number | null>(null);
   const meshRef = useRef<InstancedMesh>(null);
 
-  const { pieces, moveCount, increaseMoveCount, winner } = useGameContext();
+  const { pieces, increaseMoveCount, winner } = useGameContext();
   const { raycaster, mouse, camera } = useThree();
 
   useFrame(() => {
@@ -41,10 +41,18 @@ const PlayingPieces: React.FC = () => {
    * @param index The index of the piece to remove.
    */
   function handlePieceClick(index: number) {
-    if (winner) return;
+    if (!meshRef.current || winner) return;
+
     setActivePiece(null);
 
-    if (moveCount < 3) increaseMoveCount(1, index);
+    const intersects = raycaster.intersectObject(meshRef.current);
+    if (intersects.length > 0) {
+      const instanceId = intersects[0].instanceId;
+
+      if (instanceId === index) {
+        increaseMoveCount(1, instanceId);
+      }
+    }
   }
 
   return (

@@ -13,13 +13,17 @@ export default function UIOverlay() {
     finishTurn();
   }, [finishTurn]);
 
+  console.log(winner, turn, gameMode);
+
   return gameMode ? (
     <div className="w-full h-full absolute top-0 left-0 pointer-events-none z-10">
       <div className="p-4 flex justify-between items-start">
         <div className="bg-gradient-to-br from-pink-400 to-purple-500 rounded-2xl p-4 shadow-lg max-w-sm pointer-events-auto">
           {winner && (
             <h1 className="text-2xl font-bold text-white mb-2 text-center font-candy">
-              Player {winner} wins!
+              {gameMode === "multi" || turn === 2
+                ? `Player ${winner} wins!`
+                : "The computer wins!"}
             </h1>
           )}
           <div className="bg-white bg-opacity-20 rounded-xl p-3 space-y-2">

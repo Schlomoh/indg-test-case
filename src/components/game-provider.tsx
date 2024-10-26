@@ -93,9 +93,10 @@ const useGame = (): GameContextValue => {
 
       // Remove the specified number of pieces.
       setPieces((prevPieces) => {
-        const newPieces = index
-          ? [...prevPieces]
-          : prevPieces.slice(0, prevPieces.length - piecesRemoved);
+        const newPieces =
+          index !== undefined
+            ? [...prevPieces]
+            : prevPieces.slice(0, prevPieces.length - piecesRemoved);
 
         if (index !== undefined) {
           newPieces.splice(index, 1);
@@ -107,9 +108,11 @@ const useGame = (): GameContextValue => {
       setMoveCount((prevCount) => {
         const newCount = prevCount + piecesRemoved;
         if (newCount >= 3) {
-          setTimeout(() => finishTurn(), 0);
+          finishTurn();
+          return 0;
+        } else {
+          return newCount;
         }
-        return newCount;
       });
     },
     [winner, finishTurn]
@@ -119,10 +122,9 @@ const useGame = (): GameContextValue => {
    * Effect that checks for a winner whenever the pieces array changes.
    */
   useEffect(() => {
-    if (pieces.length <= 0 && !winner) {
-      // The last player who made a move loses.
-      const losingPlayer = turn === 1 ? 2 : 1;
-      setWinner(losingPlayer);
+    if (pieces.length <= 1 && !winner) {
+      // The current player will have to remove the last piece and thus loses.
+      setWinner(turn === 1 ? 2 : 1);
     }
   }, [pieces.length, turn, winner]);
 
@@ -132,18 +134,22 @@ const useGame = (): GameContextValue => {
    */
   const calculateOptimalMove = useCallback(
     (piecesRemaining: number): number => {
-      // Target leaving opponent with a multiple of 4 pieces
-      const targetPieces = Math.floor((piecesRemaining - 1) / 4) * 4;
-      let piecesToRemove = piecesRemaining - targetPieces;
+      if (piecesRemaining <= 1) {
+        // Forced to take the last piece
+        return 1;
+      }
 
-      // Ensure the move is legal (between 1 and 3)
-      piecesToRemove = Math.min(
-        Math.max(1, piecesToRemove),
-        3,
-        piecesRemaining
-      );
+      const modulo = piecesRemaining % 4;
 
-      return piecesToRemove;
+      if (modulo === 1) {
+        // Can't force a win, pick 1 piece
+        return 1;
+      } else {
+        // Remove enough pieces to leave the opponent with a losing position
+        const piecesToRemove = modulo === 0 ? 3 : modulo - 1;
+        // Ensure the move is legal (between 1 and 3)
+        return Math.min(Math.max(piecesToRemove, 1), 3);
+      }
     },
     []
   );
