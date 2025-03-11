@@ -1,7 +1,7 @@
 # Last One Out Loses
 
 ## Introduction
-This app was designed for practical evaluation in an interviewing process, with a strict 3-hour time limit (including concept and deployment).
+This app was designed for a practical interview process evaluation within a 3-hour time limit. It covered the entire process, including concept, development, deployment, and documentation.
 
 "Last One Out Loses" is a simple yet strategic game where a playing surface is covered with 20 items (sticks, coins, etc.). Two players take turns, and each may remove 1 to 3 items. The player who removes the final item loses the game.
 
